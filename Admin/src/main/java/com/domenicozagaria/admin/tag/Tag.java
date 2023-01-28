@@ -1,32 +1,48 @@
 package com.domenicozagaria.admin.tag;
 
 import com.domenicozagaria.admin.product.Product;
+import jakarta.annotation.Nonnull;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.SequenceGenerator;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
 
-import java.util.Set;
+import java.util.List;
 
 @Entity
-@Builder
-@AllArgsConstructor
-@NoArgsConstructor
-@Getter
-@Setter
 public class Tag {
     @Id
     @SequenceGenerator(sequenceName = "tag-sequence", name = "tag-sequence")
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private int id;
+    @Nonnull
     private String name;
-    @ManyToMany(mappedBy = "tags")
-    private Set<Product> products;
+    @ManyToMany
+    private List<Product> productList;
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public List<Product> getProductList() {
+        return productList;
+    }
+
+    public void setProductList(List<Product> productList) {
+        this.productList = productList;
+    }
 }
