@@ -1,4 +1,4 @@
-package com.domenicozagaria.admin.tag;
+package com.domenicozagaria.dto;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;

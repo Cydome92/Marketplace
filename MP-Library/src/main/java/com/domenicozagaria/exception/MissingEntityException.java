@@ -1,4 +1,4 @@
-package com.domenicozagaria.admin.exception;
+package com.domenicozagaria.exception;
 
 public class MissingEntityException extends RuntimeException {
 

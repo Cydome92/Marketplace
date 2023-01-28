@@ -1,6 +1,7 @@
 package com.domenicozagaria.admin.product;
 
 import com.domenicozagaria.admin.tag.Tag;
+import com.domenicozagaria.dto.ProductDTO;
 import jakarta.annotation.Nonnull;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;

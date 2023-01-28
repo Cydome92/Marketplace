@@ -1,8 +1,11 @@
 package com.domenicozagaria.admin.product;
 
-import com.domenicozagaria.admin.exception.MissingEntityException;
+import com.domenicozagaria.dto.ProductDTO;
+import com.domenicozagaria.exception.MissingEntityException;
 import com.domenicozagaria.admin.util.Utility;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 public class ProductService {
@@ -20,9 +23,16 @@ public class ProductService {
         productRepository.save(product);
     }
 
-    public ProductDTO getProductById(int id) {
-        return Utility.findEntityById(productRepository, id)
+    public ProductDTO getProductById(int id) throws Throwable {
+        return (ProductDTO) Utility.findEntityById(productRepository, id)
                 .map(Product::toDTO)
                 .orElseThrow(MissingEntityException::new);
+    }
+
+    public List<ProductDTO> findAllProducts() {
+        return productRepository.findAll()
+                .stream()
+                .map(Product::toDTO)
+                .toList();
     }
 }
