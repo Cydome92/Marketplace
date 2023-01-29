@@ -18,6 +18,10 @@ public class Utility {
         repository.save(entity);
     }
 
+    public static <T> void deleteEntity(JpaRepository<T, Integer> repository, T entity) {
+        repository.delete(entity);
+    }
+
     public static LocalDateTime getTodayWithDefaultTimezone() {
         return LocalDateTime.now(getDefaultTimezone());
     }

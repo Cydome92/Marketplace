@@ -1,9 +1,11 @@
 package com.domenicozagaria.admin.tag;
 
 import com.domenicozagaria.dto.TagDTO;
+import org.springframework.stereotype.Service;
 
 import java.util.function.Function;
 
+@Service
 public class TagDTOMapper implements Function<Tag, TagDTO> {
     @Override
     public TagDTO apply(Tag tag) {

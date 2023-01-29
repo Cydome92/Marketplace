@@ -1,7 +1,9 @@
 package com.domenicozagaria.admin.product;
 
+import com.domenicozagaria.admin.tag.TagService;
 import com.domenicozagaria.admin.util.Utility;
 import com.domenicozagaria.dto.ProductDTO;
+import com.domenicozagaria.dto.TagDTO;
 import com.domenicozagaria.exception.MissingEntityException;
 import org.springframework.stereotype.Service;
 
@@ -27,6 +29,18 @@ public class ProductService {
         Utility.saveEntity(productRepository, product);
     }
 
+    public void updateProduct(int productId, String name, int stock, List<TagDTO> tagDTOList) {
+        Product product = findProductById(productId);
+        product.setName(name);
+        product.setStock(stock);
+        Utility.saveEntity(productRepository, product);
+    }
+
+    private void deleteProduct(int productId) {
+        Product product = findProductById(productId);
+        Utility.deleteEntity(productRepository, product);
+    }
+
     public ProductDTO getProductById(int id) {
         return Utility.findEntityById(productRepository, id)
                 .map(productDTOMapper)
@@ -47,5 +61,10 @@ public class ProductService {
                 productDTOMapper,
                 Collectors.toList()
         );
+    }
+
+    private Product findProductById(Integer productId) {
+        return Utility.findEntityById(productRepository, productId)
+                .orElseThrow(MissingEntityException::new);
     }
 }

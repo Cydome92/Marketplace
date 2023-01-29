@@ -3,9 +3,11 @@ package com.domenicozagaria.admin.tag;
 import com.domenicozagaria.admin.util.Utility;
 import com.domenicozagaria.dto.TagDTO;
 import com.domenicozagaria.exception.AlreadyInUseEntityException;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+@Service
 public class TagService {
     private final TagRepository tagRepository;
     private final TagDTOMapper tagDTOMapper;
