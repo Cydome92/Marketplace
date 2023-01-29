@@ -1,6 +1,7 @@
 package com.domenicozagaria.admin.product;
 
 import com.domenicozagaria.admin.tag.Tag;
+import com.domenicozagaria.admin.util.Utility;
 import jakarta.annotation.Nonnull;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -69,7 +70,7 @@ public class Product {
 
     @PrePersist
     public void setCreationDate() {
-        createdAt = LocalDateTime.now(ZoneId.of("Europe/Rome"));
+        createdAt = Utility.getTodayWithDefaultTimezone();
     }
 
 
