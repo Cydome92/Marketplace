@@ -4,6 +4,7 @@ import com.domenicozagaria.admin.product.Product;
 import com.domenicozagaria.admin.product.ProductRepository;
 import com.domenicozagaria.admin.util.Utility;
 import com.domenicozagaria.dto.CartDTO;
+import com.domenicozagaria.exception.ExceededStockException;
 import com.domenicozagaria.exception.MissingEntityException;
 import org.springframework.stereotype.Service;
 
@@ -54,7 +55,20 @@ public class CartService {
                 .orElseThrow(MissingEntityException::new);
         Product product = Utility.findEntityById(productRepository, productId)
                 .orElseThrow(MissingEntityException::new);
+        int numActiveSellingByProduct = getActiveCartsWithProductSell(productId);
+        if (numActiveSellingByProduct > product.getStock()) {
+            throw new ExceededStockException();
+        }
         cart.getProductList().add(product);
         Utility.saveEntity(cartRepository, cart);
+    }
+
+    private int getActiveCartsWithProductSell(int productId) {
+        int numActiveSellingByProduct = 0;
+        List<Cart> listActiveCartWithProduct = cartRepository.findAllByProductListIdAndIsClosedFalse(productId);
+        for (Cart toCount : listActiveCartWithProduct) {
+            numActiveSellingByProduct += 1;
+        }
+        return numActiveSellingByProduct;
     }
 }
