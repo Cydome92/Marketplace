@@ -1,7 +1,6 @@
 package com.domenicozagaria.admin.product;
 
 import com.domenicozagaria.admin.tag.Tag;
-import com.domenicozagaria.dto.ProductDTO;
 import jakarta.annotation.Nonnull;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -9,11 +8,12 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.ManyToMany;
+import jakarta.persistence.PrePersist;
 import jakarta.persistence.SequenceGenerator;
-import org.springframework.data.annotation.CreatedDate;
 import org.springframework.lang.NonNull;
 
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.List;
 
 @Entity
@@ -22,7 +22,6 @@ public class Product {
     @SequenceGenerator(sequenceName = "product-sequence", name = "product-sequence")
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private int id;
-    @CreatedDate
     private LocalDateTime createdAt;
     @Nonnull
     private String name;
@@ -68,6 +67,12 @@ public class Product {
         this.stock = stock;
     }
 
+    @PrePersist
+    public void setCreationDate() {
+        createdAt = LocalDateTime.now(ZoneId.of("Europe/Rome"));
+    }
+
+
     public List<Tag> getTagList() {
         return tagList;
     }
@@ -76,12 +81,4 @@ public class Product {
         this.tagList = tagList;
     }
 
-    public ProductDTO toDTO() {
-        ProductDTO productDTO = new ProductDTO();
-        productDTO.setId(id);
-        productDTO.setName(name);
-        productDTO.setCreatedAt(createdAt);
-        productDTO.setStock(stock);
-        return productDTO;
-    }
 }
