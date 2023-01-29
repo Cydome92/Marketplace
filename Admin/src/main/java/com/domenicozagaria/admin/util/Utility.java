@@ -14,6 +14,10 @@ public class Utility {
         return repository.findById(id);
     }
 
+    public static <T> void saveEntity(JpaRepository<T, Integer> repository, T entity) {
+        repository.save(entity);
+    }
+
     public static LocalDateTime getTodayWithDefaultTimezone() {
         return LocalDateTime.now(getDefaultTimezone());
     }

@@ -9,5 +9,5 @@ import java.util.Set;
 @Repository
 public interface ProductRepository extends JpaRepository<Product, Integer> {
 
-    List<Product> findAllByTagList_IdIn(Set<Integer> tagIds);
+    List<Product> findAllByTagListIdIn(Set<Integer> tagIds);
 }

@@ -24,7 +24,7 @@ public class ProductService {
         Product product = new Product();
         product.setName(name);
         product.setStock(stock);
-        productRepository.save(product);
+        Utility.saveEntity(productRepository, product);
     }
 
     public ProductDTO getProductById(int id) {
@@ -43,7 +43,7 @@ public class ProductService {
 
     public List<ProductDTO> findAllProductsByTags(Set<Integer> tagIds) {
         return Utility.mapCollectionTo(
-                productRepository.findAllByTagList_IdIn(tagIds),
+                productRepository.findAllByTagListIdIn(tagIds),
                 productDTOMapper,
                 Collectors.toList()
         );

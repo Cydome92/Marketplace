@@ -1,5 +1,6 @@
 package com.domenicozagaria.admin.tag;
 
+import com.domenicozagaria.admin.util.Utility;
 import com.domenicozagaria.dto.TagDTO;
 import com.domenicozagaria.exception.AlreadyInUseEntityException;
 
@@ -20,7 +21,7 @@ public class TagService {
 
         Tag tag = new Tag();
         tag.setName(name);
-        tagRepository.save(tag);
+        Utility.saveEntity(tagRepository, tag);
     }
 
     public List<TagDTO> getAllTags() {
