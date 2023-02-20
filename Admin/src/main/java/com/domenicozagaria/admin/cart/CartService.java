@@ -44,10 +44,11 @@ public class CartService {
                 .orElseThrow(MissingEntityException::new);
     }
 
-    public void saveCart(String name) {
+    public CartDTO createCart(String name) {
         Cart cart = new Cart();
         cart.setName(name);
         Utility.saveEntity(cartRepository, cart);
+        return cartDTOMapper.apply(cart);
     }
 
     public void addProductToCart(int cartId, int productId) {

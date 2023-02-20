@@ -1,9 +1,7 @@
 package com.domenicozagaria.admin.product;
 
-import com.domenicozagaria.admin.tag.TagService;
 import com.domenicozagaria.admin.util.Utility;
 import com.domenicozagaria.dto.ProductDTO;
-import com.domenicozagaria.dto.TagDTO;
 import com.domenicozagaria.exception.MissingEntityException;
 import org.springframework.stereotype.Service;
 
@@ -29,7 +27,8 @@ public class ProductService {
         Utility.saveEntity(productRepository, product);
     }
 
-    public void updateProduct(int productId, String name, int stock, List<TagDTO> tagDTOList) {
+    //TODO gestione lista di tag
+    public void updateProduct(int productId, String name, int stock) {
         Product product = findProductById(productId);
         product.setName(name);
         product.setStock(stock);

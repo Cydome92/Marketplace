@@ -1,16 +1,15 @@
 package com.domenicozagaria.admin.cart;
 
 import com.domenicozagaria.admin.product.Product;
-import com.domenicozagaria.admin.util.Utility;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.ManyToMany;
-import jakarta.persistence.PrePersist;
-import jakarta.persistence.SequenceGenerator;
+import org.hibernate.annotations.CreationTimestamp;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.OneToMany;
+import javax.persistence.SequenceGenerator;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -20,12 +19,12 @@ public class Cart {
     @SequenceGenerator(sequenceName = "cart-sequence", name = "cart-sequence")
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private int id;
+    @CreationTimestamp
     private LocalDateTime createdAt;
     private String name;
     @Column(columnDefinition = "boolean default false")
     private Boolean isClosed;
-
-    @ManyToMany
+    @OneToMany
     private List<Product> productList;
 
     public int getId() {
@@ -66,10 +65,5 @@ public class Cart {
 
     public void setProductList(List<Product> productList) {
         this.productList = productList;
-    }
-
-    @PrePersist
-    public void setCreationDate() {
-        createdAt = Utility.getTodayWithDefaultTimezone();
     }
 }

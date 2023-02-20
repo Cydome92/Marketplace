@@ -1,20 +1,16 @@
 package com.domenicozagaria.admin.product;
 
 import com.domenicozagaria.admin.tag.Tag;
-import com.domenicozagaria.admin.util.Utility;
-import jakarta.annotation.Nonnull;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.ManyToMany;
-import jakarta.persistence.PrePersist;
-import jakarta.persistence.SequenceGenerator;
-import org.springframework.lang.NonNull;
+import org.hibernate.annotations.CreationTimestamp;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.ManyToMany;
+import javax.persistence.SequenceGenerator;
 import java.time.LocalDateTime;
-import java.time.ZoneId;
 import java.util.List;
 
 @Entity
@@ -23,17 +19,16 @@ public class Product {
     @SequenceGenerator(sequenceName = "product-sequence", name = "product-sequence")
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private int id;
+    @CreationTimestamp
     private LocalDateTime createdAt;
-    @Nonnull
     private String name;
     @Column(columnDefinition = "integer default 0")
     private int stock;
     @ManyToMany(mappedBy = "productList")
     private List<Tag> tagList;
 
-    /*
-    TODO: implementare barCode e QRCode
-     */
+    //TODO: implementare barCode e QRCode
+
 
     public int getId() {
         return id;
@@ -51,12 +46,11 @@ public class Product {
         this.createdAt = createdAt;
     }
 
-    @NonNull
     public String getName() {
         return name;
     }
 
-    public void setName(@NonNull String name) {
+    public void setName(String name) {
         this.name = name;
     }
 
@@ -68,12 +62,6 @@ public class Product {
         this.stock = stock;
     }
 
-    @PrePersist
-    public void setCreationDate() {
-        createdAt = Utility.getTodayWithDefaultTimezone();
-    }
-
-
     public List<Tag> getTagList() {
         return tagList;
     }
@@ -81,5 +69,4 @@ public class Product {
     public void setTagList(List<Tag> tagList) {
         this.tagList = tagList;
     }
-
 }
