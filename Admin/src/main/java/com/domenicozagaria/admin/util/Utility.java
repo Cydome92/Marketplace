@@ -1,5 +1,7 @@
 package com.domenicozagaria.admin.util;
 
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.time.LocalDateTime;
@@ -10,6 +12,8 @@ import java.util.function.Function;
 import java.util.stream.Collector;
 
 public class Utility {
+
+    private static final int PAGE_SIZE = 50;
     public static <T> Optional<T> findEntityById(JpaRepository<T, Integer> repository, Integer id) {
         return repository.findById(id);
     }
@@ -34,5 +38,13 @@ public class Utility {
         return toMap.stream()
                 .map(function)
                 .collect(collector);
+    }
+
+    public static int getDefaultPageSize() {
+        return PAGE_SIZE;
+    }
+
+    public static Pageable getPageable(int pageNumber) {
+        return PageRequest.of(pageNumber, getDefaultPageSize());
     }
 }

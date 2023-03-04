@@ -1,5 +1,7 @@
 package com.domenicozagaria.admin.cart;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -10,9 +12,7 @@ import java.util.Optional;
 @Repository
 public interface CartRepository extends JpaRepository<Cart, Integer> {
 
-    List<Cart> findAllByCreatedAtBetween(LocalDateTime startPeriod, LocalDateTime endPeriod);
-
-    Optional<Cart> findByName(String name);
+    Page<Cart> findAllByCreatedAtBetween(Pageable pageable, LocalDateTime startPeriod, LocalDateTime endPeriod);
 
     List<Cart> findAllByProductListIdAndIsClosedFalse(Integer productId);
 }

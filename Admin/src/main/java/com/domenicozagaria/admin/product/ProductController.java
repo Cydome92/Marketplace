@@ -31,7 +31,7 @@ public class ProductController {
     }
 
     @DeleteMapping("{productId}")
-    @ResponseStatus(HttpStatus.ACCEPTED)
+    @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteProduct(@PathVariable Integer productId) {
         productService.deleteProduct(productId);
     }
@@ -43,11 +43,11 @@ public class ProductController {
 
     @GetMapping
     public Page<ProductDTO> getProducts(@RequestParam @NotNull Integer page) {
-        return productService.findAllProducts(page);
+        return productService.getProducts(page);
     }
 
     @PatchMapping("{productId}")
-    @ResponseStatus(HttpStatus.ACCEPTED)
+    @ResponseStatus(HttpStatus.NO_CONTENT)
     public void updateProduct(@RequestBody @Valid ProductDTO productDto, @PathVariable int productId) {
         productService.updateProduct(productId, productDto.getName(), productDto.getStock());
     }

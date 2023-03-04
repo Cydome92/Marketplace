@@ -8,11 +8,19 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.ManyToMany;
+import jakarta.persistence.NamedAttributeNode;
+import jakarta.persistence.NamedEntityGraph;
 import org.hibernate.annotations.CreationTimestamp;
 
 import java.time.LocalDateTime;
 import java.util.List;
 
+@NamedEntityGraph(
+        name = "cart-products",
+        attributeNodes = {
+                @NamedAttributeNode(value = "productList")
+        }
+)
 @Entity
 public class Cart {
     @Id
@@ -23,8 +31,8 @@ public class Cart {
     private String name;
     @Column(columnDefinition = "boolean default false")
     private Boolean isClosed;
-    @ManyToMany(fetch = FetchType.LAZY)
-    private List<Product> productList;
+    @ManyToMany(fetch = FetchType.EAGER)
+    private List<Product> productList;  //TODO valutare se trasformarlo in page
 
     public int getId() {
         return id;
