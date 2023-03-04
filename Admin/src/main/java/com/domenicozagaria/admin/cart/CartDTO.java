@@ -1,10 +1,10 @@
 package com.domenicozagaria.admin.cart;
 
 import com.domenicozagaria.admin.util.dto.GenericDTO;
+import jakarta.validation.constraints.NotEmpty;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import javax.validation.constraints.NotEmpty;
 import java.time.LocalDateTime;
 
 @NoArgsConstructor

@@ -1,10 +1,9 @@
 package com.domenicozagaria.admin.tag;
 
 import com.domenicozagaria.admin.util.dto.GenericDTO;
+import jakarta.validation.constraints.NotEmpty;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
-import javax.validation.constraints.NotEmpty;
 
 @NoArgsConstructor
 @Data
