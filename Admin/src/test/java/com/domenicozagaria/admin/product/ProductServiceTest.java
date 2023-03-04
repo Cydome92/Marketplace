@@ -44,7 +44,7 @@ class ProductServiceTest {
     @BeforeEach
     void setUp() {
         autoCloseable = MockitoAnnotations.openMocks(this);
-        productService = new ProductService(tagService, productRepository, productDTOMapper, genericDTOMapper);
+        productService = new ProductService(productRepository, productDTOMapper, genericDTOMapper);
     }
 
     @AfterEach
