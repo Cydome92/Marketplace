@@ -56,7 +56,8 @@ public class ProductService {
 
     public List<ProductDTO> findAllProductsByTags(Set<Integer> tagIds) {
         return Utility.mapCollectionTo(
-                productRepository.findAllByTagListIdIn(tagIds),
+                productRepository.findAll(),
+                //productRepository.findAllByTagListIdIn(tagIds),
                 productDTOMapper,
                 Collectors.toList()
         );

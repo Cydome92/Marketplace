@@ -1,6 +1,7 @@
 package com.domenicozagaria.admin.product;
 
 import com.domenicozagaria.admin.tag.Tag;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.hibernate.annotations.CreationTimestamp;
 
 import javax.persistence.Column;
@@ -24,6 +25,7 @@ public class Product {
     private String name;
     @Column(columnDefinition = "integer default 0")
     private int stock;
+    @JsonIgnore
     @ManyToMany(mappedBy = "productList")
     private List<Tag> tagList;
 

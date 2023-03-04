@@ -3,6 +3,7 @@ package com.domenicozagaria.admin.tag;
 import com.domenicozagaria.admin.product.Product;
 
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -17,7 +18,7 @@ public class Tag {
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private int id;
     private String name;
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.LAZY)
     private List<Product> productList;
 
     public int getId() {
