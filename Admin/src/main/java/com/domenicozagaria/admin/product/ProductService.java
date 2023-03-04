@@ -1,7 +1,5 @@
 package com.domenicozagaria.admin.product;
 
-import com.domenicozagaria.admin.tag.TagDTO;
-import com.domenicozagaria.admin.tag.TagService;
 import com.domenicozagaria.admin.util.Utility;
 import com.domenicozagaria.admin.util.dto.GenericDTO;
 import com.domenicozagaria.admin.util.exception.AlreadyInUseEntityException;
@@ -10,25 +8,18 @@ import com.domenicozagaria.admin.util.exception.MissingEntityException;
 import com.domenicozagaria.admin.util.mapper.GenericDTOMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-
-import java.util.Set;
-import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Service
 public class ProductService {
-
-    private final int PAGE_SIZE = 50;
-    private final TagService tagService;
     private final ProductRepository productRepository;
     private final ProductDTOMapper productDTOMapper;
     private final GenericDTOMapper genericDTOMapper;
 
     public GenericDTO saveProduct(String name, int stock) {
-        checkName(name);
+        checkNameExists(name);
         checkStock(stock);
         Product product = new Product();
         product.setName(name);
@@ -40,9 +31,10 @@ public class ProductService {
     //TODO gestione lista di tag
 
     public void updateProduct(int productId, String name, int stock) {
-        Product product = findProductById(productId);
+        Product product = Utility.findEntityById(productRepository, productId)
+                .orElseThrow(MissingEntityException::new);
         if (!product.getName().equalsIgnoreCase(name)) {
-            checkName(name);
+            checkNameExists(name);
         }
         checkStock(stock);
         product.setName(name);
@@ -50,7 +42,8 @@ public class ProductService {
         Utility.saveEntity(productRepository, product);
     }
     public void deleteProduct(int productId) {
-        Product product = findProductById(productId);
+        Product product = Utility.findEntityById(productRepository, productId)
+                .orElseThrow(MissingEntityException::new);
         Utility.deleteEntity(productRepository, product);
     }
 
@@ -60,22 +53,17 @@ public class ProductService {
                 .orElseThrow(MissingEntityException::new);
     }
 
-    public Page<ProductDTO> findAllProducts(int pageNumber) {
-        Pageable page = PageRequest.of(pageNumber, PAGE_SIZE);
+    public Page<ProductDTO> getProducts(int pageNumber) {
+        Pageable page = Utility.getPageable(pageNumber);
         return productRepository.findAll(page).map(productDTOMapper);
     }
 
-    public Page<ProductDTO> findAllProductsByTags(Set<Integer> tagIds, int pageNumber) {
-        Set<TagDTO> tags = tagService.findAllTagsBySetIds(tagIds);
-        if (tags.size() != tagIds.size()) {
-            throw new MissingEntityException();
-        }
-        Set<Integer> tagsId = Utility.mapCollectionTo(tags, TagDTO::getId, Collectors.toSet());
-        Pageable page = PageRequest.of(pageNumber, PAGE_SIZE);
-        return productRepository.findAllByTagListIdIn(tagsId, page).map(productDTOMapper);
+    public Page<ProductDTO> getProductsByTagId(Integer tagId, int pageNumber) {
+        Pageable page = Utility.getPageable(pageNumber);
+        return productRepository.findAllByTagListId(tagId, page).map(productDTOMapper);
     }
 
-    private void checkName(String name) {
+    private void checkNameExists(String name) {
         boolean alreadyExists = productRepository.existsByName(name);
         if (alreadyExists) {
             throw new AlreadyInUseEntityException("Nome " + name + " già censito a sistema.");
@@ -86,10 +74,5 @@ public class ProductService {
         if (value < 0) {
             throw new ExceededStockException();
         }
-    }
-
-    private Product findProductById(Integer productId) {
-        return Utility.findEntityById(productRepository, productId)
-                .orElseThrow(MissingEntityException::new);
     }
 }

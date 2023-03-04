@@ -11,6 +11,7 @@ public class ProductDTOMapper implements Function<Product, ProductDTO> {
         ProductDTO productDTO = new ProductDTO();
         productDTO.setId(product.getId());
         productDTO.setName(product.getName());
+        productDTO.setPrice(product.getPrice());
         productDTO.setCreatedAt(product.getCreatedAt());
         productDTO.setStock(product.getStock());
         return productDTO;

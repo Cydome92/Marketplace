@@ -3,11 +3,17 @@ package com.domenicozagaria.admin.cart;
 import com.domenicozagaria.admin.product.Product;
 import com.domenicozagaria.admin.product.ProductRepository;
 import com.domenicozagaria.admin.util.Utility;
+import com.domenicozagaria.admin.util.dto.GenericDTO;
+import com.domenicozagaria.admin.util.exception.CartClosedException;
 import com.domenicozagaria.admin.util.exception.ExceededStockException;
 import com.domenicozagaria.admin.util.exception.MissingEntityException;
+import com.domenicozagaria.admin.util.mapper.GenericDTOMapper;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -17,19 +23,13 @@ public class CartService {
 
     private final CartRepository cartRepository;
     private final CartDTOMapper cartDTOMapper;
+    //FIXME non dovrebbe manipolare il repository, ma il service
     private final ProductRepository productRepository;
+    private final GenericDTOMapper genericDTOMapper;
 
-    public List<CartDTO> findCartByPeriod(LocalDateTime startPeriod, LocalDateTime endPeriod) {
-        return cartRepository.findAllByCreatedAtBetween(startPeriod, endPeriod)
-                .stream()
-                .map(cartDTOMapper)
-                .toList();
-    }
-
-    public CartDTO findCartByName(String name) {
-        return cartRepository.findByName(name)
-                .map(cartDTOMapper)
-                .orElseThrow(MissingEntityException::new);
+    public Page<CartDTO> findCartByPeriod(int pageNumber, LocalDateTime startPeriod, LocalDateTime endPeriod) {
+        Pageable pageable = Utility.getPageable(pageNumber);
+        return cartRepository.findAllByCreatedAtBetween(pageable, startPeriod, endPeriod).map(cartDTOMapper);
     }
 
     public CartDTO findCartById(int id) {
@@ -38,11 +38,28 @@ public class CartService {
                 .orElseThrow(MissingEntityException::new);
     }
 
-    public CartDTO createCart(String name) {
+    public GenericDTO createCart(String name) {
         Cart cart = new Cart();
         cart.setName(name);
+        cart.setClosed(false);
         Utility.saveEntity(cartRepository, cart);
-        return cartDTOMapper.apply(cart);
+        return genericDTOMapper.apply(cartDTOMapper.apply(cart));
+    }
+
+    public void deleteCart(int cartId) {
+        Cart cart = Utility.findEntityById(cartRepository, cartId)
+                        .orElseThrow(MissingEntityException::new);
+        if (cart.getClosed() == true) {
+            throw new CartClosedException();
+        }
+        Utility.deleteEntity(cartRepository, cart);
+    }
+
+    public void updateCart(int cartId, boolean setClosed) {
+        Cart cart = Utility.findEntityById(cartRepository, cartId)
+                .orElseThrow(MissingEntityException::new);
+        cart.setClosed(setClosed);
+        cartRepository.save(cart);
     }
 
     public void addProductToCart(int cartId, int productId) {
@@ -50,7 +67,7 @@ public class CartService {
                 .orElseThrow(MissingEntityException::new);
         Product product = Utility.findEntityById(productRepository, productId)
                 .orElseThrow(MissingEntityException::new);
-        int numActiveSellingByProduct = getActiveCartsWithProductSell(productId);
+        long numActiveSellingByProduct = getActiveCartsWithProductSell(productId);
         if (numActiveSellingByProduct > product.getStock()) {
             throw new ExceededStockException();
         }
@@ -58,12 +75,18 @@ public class CartService {
         Utility.saveEntity(cartRepository, cart);
     }
 
-    private int getActiveCartsWithProductSell(int productId) {
-        int numActiveSellingByProduct = 0;
+    public BigDecimal getTotalPrice(int cartId) {
+        Cart cart = Utility.findEntityById(cartRepository, cartId)
+                .orElseThrow(MissingEntityException::new);
+        return cart.getProductList().stream()
+                .map(Product::getPrice)
+                .reduce(BigDecimal.ZERO, (p1, p2) -> p1.add(p2));
+    }
+
+    private long getActiveCartsWithProductSell(int productId) {
         List<Cart> listActiveCartWithProduct = cartRepository.findAllByProductListIdAndIsClosedFalse(productId);
-        for (Cart toCount : listActiveCartWithProduct) {
-            numActiveSellingByProduct += 1;
-        }
-        return numActiveSellingByProduct;
+        long result = listActiveCartWithProduct.stream()
+                .count();
+        return result;
     }
 }

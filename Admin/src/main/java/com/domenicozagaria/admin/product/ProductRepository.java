@@ -9,8 +9,6 @@ import java.util.Set;
 
 @Repository
 public interface ProductRepository extends JpaRepository<Product, Integer> {
-
-    Page<Product> findAllByTagListIdIn(Set<Integer> tagIds, Pageable page);
-
+    Page<Product> findAllByTagListId(int tagId, Pageable pageable);
     boolean existsByName(String name);
 }
