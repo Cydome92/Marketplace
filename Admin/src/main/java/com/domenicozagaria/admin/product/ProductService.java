@@ -3,8 +3,10 @@ package com.domenicozagaria.admin.product;
 import com.domenicozagaria.admin.tag.TagService;
 import com.domenicozagaria.admin.util.Utility;
 import com.domenicozagaria.admin.tag.TagDTO;
+import com.domenicozagaria.admin.util.dto.GenericDTO;
 import com.domenicozagaria.admin.util.exception.AlreadyInUseEntityException;
 import com.domenicozagaria.admin.util.exception.MissingEntityException;
+import com.domenicozagaria.admin.util.mapper.GenericDTOMapper;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -17,14 +19,16 @@ public class ProductService {
     private final TagService tagService;
     private final ProductRepository productRepository;
     private final ProductDTOMapper productDTOMapper;
+    private final GenericDTOMapper genericDTOMapper;
 
-    public ProductService(TagService tagService, ProductRepository productRepository, ProductDTOMapper productDTOMapper) {
+    public ProductService(TagService tagService, ProductRepository productRepository, ProductDTOMapper productDTOMapper, GenericDTOMapper genericDTOMapper) {
         this.tagService = tagService;
         this.productRepository = productRepository;
         this.productDTOMapper = productDTOMapper;
+        this.genericDTOMapper = genericDTOMapper;
     }
 
-    public Integer saveProduct(String name, int stock) {
+    public GenericDTO saveProduct(String name, int stock) {
         boolean alreadyExists = productRepository.existsByName(name);
         if (alreadyExists) {
             throw new AlreadyInUseEntityException("Nome " + name + " già censito a sistema.");
@@ -33,7 +37,7 @@ public class ProductService {
         product.setName(name);
         product.setStock(stock);
         Utility.saveEntity(productRepository, product);
-        return product.getId();
+        return genericDTOMapper.apply(productDTOMapper.apply(product));
     }
 
     //TODO gestione lista di tag

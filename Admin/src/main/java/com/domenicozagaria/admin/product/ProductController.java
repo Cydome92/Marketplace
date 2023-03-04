@@ -1,5 +1,7 @@
 package com.domenicozagaria.admin.product;
 
+import com.domenicozagaria.admin.util.dto.GenericDTO;
+import com.domenicozagaria.admin.util.mapper.GenericDTOMapper;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -21,7 +23,7 @@ public class ProductController {
 
     @PutMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public Integer saveProduct(@RequestBody @Valid ProductDTO productDTO) {
+    public GenericDTO saveProduct(@RequestBody @Valid ProductDTO productDTO) {
         return productService.saveProduct(productDTO.getName(), productDTO.getStock());
     }
 }
