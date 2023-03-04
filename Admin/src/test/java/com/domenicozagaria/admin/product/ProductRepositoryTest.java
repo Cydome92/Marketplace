@@ -16,10 +16,6 @@ class ProductRepositoryTest {
     private ProductRepository productRepository;
 
     @Test
-    void findAllByTagListIdIn() {
-    }
-
-    @Test
     void existsByName() {
         final String TEST_NAME = "test-name";
         Product product = new Product();
@@ -29,5 +25,18 @@ class ProductRepositoryTest {
 
         boolean exists = productRepository.existsByName(TEST_NAME);
         assertTrue(exists);
+    }
+
+    @Test
+    void doesNotExistsByName() {
+        final String TEST_NAME = "test-name";
+        final String ANOTHER_TEST_NAME = "test-name-1";
+        Product product = new Product();
+        product.setName(TEST_NAME);
+        product.setStock(10);
+        productRepository.save(product);
+
+        boolean exists = productRepository.existsByName(ANOTHER_TEST_NAME);
+        assertFalse(exists);
     }
 }

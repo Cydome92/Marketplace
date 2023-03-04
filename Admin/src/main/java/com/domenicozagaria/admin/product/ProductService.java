@@ -5,6 +5,7 @@ import com.domenicozagaria.admin.tag.TagService;
 import com.domenicozagaria.admin.util.Utility;
 import com.domenicozagaria.admin.util.dto.GenericDTO;
 import com.domenicozagaria.admin.util.exception.AlreadyInUseEntityException;
+import com.domenicozagaria.admin.util.exception.ExceededStockException;
 import com.domenicozagaria.admin.util.exception.MissingEntityException;
 import com.domenicozagaria.admin.util.mapper.GenericDTOMapper;
 import lombok.RequiredArgsConstructor;
@@ -28,6 +29,7 @@ public class ProductService {
 
     public GenericDTO saveProduct(String name, int stock) {
         checkName(name);
+        checkStock(stock);
         Product product = new Product();
         product.setName(name);
         product.setStock(stock);
@@ -42,6 +44,7 @@ public class ProductService {
         if (!product.getName().equalsIgnoreCase(name)) {
             checkName(name);
         }
+        checkStock(stock);
         product.setName(name);
         product.setStock(stock);
         Utility.saveEntity(productRepository, product);
@@ -76,6 +79,12 @@ public class ProductService {
         boolean alreadyExists = productRepository.existsByName(name);
         if (alreadyExists) {
             throw new AlreadyInUseEntityException("Nome " + name + " già censito a sistema.");
+        }
+    }
+
+    private void checkStock(Integer value) {
+        if (value < 0) {
+            throw new ExceededStockException();
         }
     }
 
