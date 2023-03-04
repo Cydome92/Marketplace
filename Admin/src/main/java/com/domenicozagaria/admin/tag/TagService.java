@@ -15,7 +15,7 @@ import org.springframework.stereotype.Service;
 public class TagService {
     private final TagRepository tagRepository;
     private final TagDTOMapper tagDTOMapper;
-    private final GenericDTOMapper genericDTOMapper;
+    private final GenericDTOMapper<TagDTO> genericDTOMapper;
 
     public GenericDTO saveTag(String name) {
         checkNameTag(name);

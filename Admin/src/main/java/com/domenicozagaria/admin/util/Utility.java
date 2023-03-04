@@ -1,5 +1,6 @@
 package com.domenicozagaria.admin.util;
 
+import com.domenicozagaria.admin.util.dto.GenericDTO;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;

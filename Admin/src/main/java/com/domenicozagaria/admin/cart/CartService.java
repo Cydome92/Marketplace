@@ -25,7 +25,7 @@ public class CartService {
     private final CartDTOMapper cartDTOMapper;
     //FIXME non dovrebbe manipolare il repository, ma il service
     private final ProductRepository productRepository;
-    private final GenericDTOMapper genericDTOMapper;
+    private final GenericDTOMapper<CartDTO> genericDTOMapper;
 
     public Page<CartDTO> findCartByPeriod(int pageNumber, LocalDateTime startPeriod, LocalDateTime endPeriod) {
         Pageable pageable = Utility.getPageable(pageNumber);

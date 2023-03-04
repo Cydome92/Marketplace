@@ -16,7 +16,7 @@ import org.springframework.stereotype.Service;
 public class ProductService {
     private final ProductRepository productRepository;
     private final ProductDTOMapper productDTOMapper;
-    private final GenericDTOMapper genericDTOMapper;
+    private final GenericDTOMapper<ProductDTO> genericDTOMapper;
 
     public GenericDTO saveProduct(String name, int stock) {
         checkNameExists(name);
