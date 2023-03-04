@@ -5,9 +5,11 @@ import org.hibernate.annotations.CreationTimestamp;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 import javax.persistence.SequenceGenerator;
 import java.time.LocalDateTime;
@@ -24,7 +26,7 @@ public class Cart {
     private String name;
     @Column(columnDefinition = "boolean default false")
     private Boolean isClosed;
-    @OneToMany
+    @ManyToMany(fetch = FetchType.LAZY)
     private List<Product> productList;
 
     public int getId() {

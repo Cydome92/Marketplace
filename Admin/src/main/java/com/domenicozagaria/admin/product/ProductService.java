@@ -1,8 +1,10 @@
 package com.domenicozagaria.admin.product;
 
+import com.domenicozagaria.admin.tag.TagService;
 import com.domenicozagaria.admin.util.Utility;
-import com.domenicozagaria.dto.ProductDTO;
-import com.domenicozagaria.exception.MissingEntityException;
+import com.domenicozagaria.admin.tag.TagDTO;
+import com.domenicozagaria.admin.util.exception.AlreadyInUseEntityException;
+import com.domenicozagaria.admin.util.exception.MissingEntityException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -12,19 +14,26 @@ import java.util.stream.Collectors;
 @Service
 public class ProductService {
 
+    private final TagService tagService;
     private final ProductRepository productRepository;
     private final ProductDTOMapper productDTOMapper;
 
-    public ProductService(ProductRepository productRepository, ProductDTOMapper productDTOMapper) {
+    public ProductService(TagService tagService, ProductRepository productRepository, ProductDTOMapper productDTOMapper) {
+        this.tagService = tagService;
         this.productRepository = productRepository;
         this.productDTOMapper = productDTOMapper;
     }
 
-    public void saveProduct(String name, int stock) {
+    public Integer saveProduct(String name, int stock) {
+        boolean alreadyExists = productRepository.existsByName(name);
+        if (alreadyExists) {
+            throw new AlreadyInUseEntityException("Nome " + name + " già censito a sistema.");
+        }
         Product product = new Product();
         product.setName(name);
         product.setStock(stock);
         Utility.saveEntity(productRepository, product);
+        return product.getId();
     }
 
     //TODO gestione lista di tag
@@ -55,9 +64,13 @@ public class ProductService {
     }
 
     public List<ProductDTO> findAllProductsByTags(Set<Integer> tagIds) {
+        Set<TagDTO> tags = tagService.findAllTagsBySetIds(tagIds);
+        if (tags.size() != tagIds.size()) {
+            throw new MissingEntityException();
+        }
+        Set<Integer> tagsId = Utility.mapCollectionTo(tags, TagDTO::getId, Collectors.toSet());
         return Utility.mapCollectionTo(
-                productRepository.findAll(),
-                //productRepository.findAllByTagListIdIn(tagIds),
+                productRepository.findAllByTagListIdIn(tagsId),
                 productDTOMapper,
                 Collectors.toList()
         );

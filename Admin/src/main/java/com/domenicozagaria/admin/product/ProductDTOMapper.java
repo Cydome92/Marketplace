@@ -1,6 +1,5 @@
 package com.domenicozagaria.admin.product;
 
-import com.domenicozagaria.dto.ProductDTO;
 import org.springframework.stereotype.Service;
 
 import java.util.function.Function;

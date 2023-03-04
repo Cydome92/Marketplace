@@ -8,17 +8,18 @@
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
         <module name="Admin" />
-        <module name="MP-Library" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
       <module name="Customer" target="17" />
+      <module name="MP-Library" target="1.8" />
     </bytecodeTargetLevel>
   </component>
   <component name="JavacSettings">
     <option name="ADDITIONAL_OPTIONS_OVERRIDE">
       <module name="Admin" options="-parameters" />
       <module name="Customer" options="-parameters" />
+      <module name="MP-Library" options="-parameters" />
     </option>
   </component>
 </project>

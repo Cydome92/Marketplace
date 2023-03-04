@@ -1,11 +1,12 @@
 package com.domenicozagaria.admin.tag;
 
 import com.domenicozagaria.admin.util.Utility;
-import com.domenicozagaria.dto.TagDTO;
-import com.domenicozagaria.exception.AlreadyInUseEntityException;
+import com.domenicozagaria.admin.util.exception.AlreadyInUseEntityException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 public class TagService {
@@ -31,5 +32,12 @@ public class TagService {
                 .stream()
                 .map(tagDTOMapper)
                 .toList();
+    }
+
+    public Set<TagDTO> findAllTagsBySetIds(Set<Integer> ids) {
+        return tagRepository.findByIdIn(ids)
+                .stream()
+                .map(tagDTOMapper)
+                .collect(Collectors.toSet());
     }
 }

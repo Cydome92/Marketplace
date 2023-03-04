@@ -1,6 +1,5 @@
 package com.domenicozagaria.admin.cart;
 
-import com.domenicozagaria.dto.CartDTO;
 import org.springframework.stereotype.Service;
 
 import java.util.function.Function;

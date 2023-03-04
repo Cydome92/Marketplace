@@ -3,9 +3,8 @@ package com.domenicozagaria.admin.cart;
 import com.domenicozagaria.admin.product.Product;
 import com.domenicozagaria.admin.product.ProductRepository;
 import com.domenicozagaria.admin.util.Utility;
-import com.domenicozagaria.dto.CartDTO;
-import com.domenicozagaria.exception.ExceededStockException;
-import com.domenicozagaria.exception.MissingEntityException;
+import com.domenicozagaria.admin.util.exception.ExceededStockException;
+import com.domenicozagaria.admin.util.exception.MissingEntityException;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
