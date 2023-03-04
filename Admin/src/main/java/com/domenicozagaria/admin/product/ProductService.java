@@ -7,12 +7,14 @@ import com.domenicozagaria.admin.util.dto.GenericDTO;
 import com.domenicozagaria.admin.util.exception.AlreadyInUseEntityException;
 import com.domenicozagaria.admin.util.exception.MissingEntityException;
 import com.domenicozagaria.admin.util.mapper.GenericDTOMapper;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+@RequiredArgsConstructor
 @Service
 public class ProductService {
 
@@ -20,13 +22,6 @@ public class ProductService {
     private final ProductRepository productRepository;
     private final ProductDTOMapper productDTOMapper;
     private final GenericDTOMapper genericDTOMapper;
-
-    public ProductService(TagService tagService, ProductRepository productRepository, ProductDTOMapper productDTOMapper, GenericDTOMapper genericDTOMapper) {
-        this.tagService = tagService;
-        this.productRepository = productRepository;
-        this.productDTOMapper = productDTOMapper;
-        this.genericDTOMapper = genericDTOMapper;
-    }
 
     public GenericDTO saveProduct(String name, int stock) {
         boolean alreadyExists = productRepository.existsByName(name);

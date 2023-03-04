@@ -2,21 +2,18 @@ package com.domenicozagaria.admin.tag;
 
 import com.domenicozagaria.admin.util.Utility;
 import com.domenicozagaria.admin.util.exception.AlreadyInUseEntityException;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+@RequiredArgsConstructor
 @Service
 public class TagService {
     private final TagRepository tagRepository;
     private final TagDTOMapper tagDTOMapper;
-
-    public TagService(TagRepository tagRepository, TagDTOMapper tagDTOMapper) {
-        this.tagRepository = tagRepository;
-        this.tagDTOMapper = tagDTOMapper;
-    }
 
     public void saveTag(String name) {
         if (tagRepository.existsByName(name))

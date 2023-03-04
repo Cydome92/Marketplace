@@ -5,24 +5,19 @@ import com.domenicozagaria.admin.product.ProductRepository;
 import com.domenicozagaria.admin.util.Utility;
 import com.domenicozagaria.admin.util.exception.ExceededStockException;
 import com.domenicozagaria.admin.util.exception.MissingEntityException;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.List;
 
+@RequiredArgsConstructor
 @Service
 public class CartService {
 
     private final CartRepository cartRepository;
     private final CartDTOMapper cartDTOMapper;
     private final ProductRepository productRepository;
-
-    public CartService(CartRepository cartRepository, CartDTOMapper cartDTOMapper,
-                       ProductRepository productRepository) {
-        this.cartRepository = cartRepository;
-        this.cartDTOMapper = cartDTOMapper;
-        this.productRepository = productRepository;
-    }
 
     public List<CartDTO> findCartByPeriod(LocalDateTime startPeriod, LocalDateTime endPeriod) {
         return cartRepository.findAllByCreatedAtBetween(startPeriod, endPeriod)
