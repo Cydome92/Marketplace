@@ -13,6 +13,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -72,6 +73,14 @@ public class CartService {
         }
         cart.getProductList().add(product);
         Utility.saveEntity(cartRepository, cart);
+    }
+
+    public BigDecimal getTotalPrice(int cartId) {
+        Cart cart = Utility.findEntityById(cartRepository, cartId)
+                .orElseThrow(MissingEntityException::new);
+        return cart.getProductList().stream()
+                .map(Product::getPrice)
+                .reduce(BigDecimal.ZERO, (p1, p2) -> p1.add(p2));
     }
 
     private long getActiveCartsWithProductSell(int productId) {

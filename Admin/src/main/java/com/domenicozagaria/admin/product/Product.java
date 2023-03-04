@@ -10,6 +10,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.ManyToMany;
 import org.hibernate.annotations.CreationTimestamp;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.Set;
 
@@ -23,6 +24,8 @@ public class Product {
     private String name;
     @Column(columnDefinition = "integer default 0")
     private int stock;
+    @Column(columnDefinition = "decimal default 0.0")
+    private BigDecimal price;
     @ManyToMany(fetch = FetchType.LAZY)
     private Set<Tag> tagList;
 
@@ -67,5 +70,13 @@ public class Product {
 
     public void setTagList(Set<Tag> tagList) {
         this.tagList = tagList;
+    }
+
+    public BigDecimal getPrice() {
+        return price;
+    }
+
+    public void setPrice(BigDecimal price) {
+        this.price = price;
     }
 }
