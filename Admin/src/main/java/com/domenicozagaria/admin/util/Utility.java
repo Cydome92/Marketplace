@@ -8,6 +8,7 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.Collection;
 import java.util.Optional;
+import java.util.UUID;
 import java.util.function.Function;
 import java.util.stream.Collector;
 
@@ -15,6 +16,10 @@ public class Utility {
 
     private static final int PAGE_SIZE = 50;
     public static <T> Optional<T> findEntityById(JpaRepository<T, Integer> repository, Integer id) {
+        return repository.findById(id);
+    }
+
+    public static <T> Optional<T> findEntityById(JpaRepository<T, UUID> repository, UUID id) {
         return repository.findById(id);
     }
 

@@ -1,6 +1,7 @@
 package com.domenicozagaria.admin.cart;
 
 import com.domenicozagaria.admin.discount.Discount;
+import com.domenicozagaria.admin.discount.DiscountService;
 import com.domenicozagaria.admin.product.Product;
 import com.domenicozagaria.admin.product.ProductRepository;
 import com.domenicozagaria.admin.util.Utility;
@@ -24,6 +25,7 @@ import java.util.function.Function;
 @Service
 public class CartService {
 
+    private final DiscountService discountService;
     private final CartRepository cartRepository;
     private final CartDTOMapper cartDTOMapper;
     //FIXME non dovrebbe manipolare il repository, ma il service
@@ -87,18 +89,11 @@ public class CartService {
     }
 
     private Function<Product, BigDecimal> getDiscountedPrice() {
-        return product -> product.getDiscounts().stream()
-                .filter(d -> !d.isUsed())
-                .filter(d -> Utility.checkInBetween(Utility.getTodayWithDefaultTimezone(), d.getStartDate(), d.getExpirationDate()))
+        return product -> discountService.getActualMaxDiscount(product.getDiscounts())
                 .map(Discount::getPercentage)
-                .max(Comparator.naturalOrder())
                 .map(BigDecimal::valueOf)
-                .map(evaluateDiscount(product.getPrice()))
+                .map(v -> discountService.evaluateDiscount(v, product.getPrice()))
                 .orElse(product.getPrice());
-    }
-
-    private Function<BigDecimal, BigDecimal> evaluateDiscount(BigDecimal originalPrice) {
-        return v -> v.divide(BigDecimal.valueOf(100), RoundingMode.DOWN).multiply(originalPrice);
     }
 
     private long getActiveCartsWithProductSell(int productId) {
