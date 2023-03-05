@@ -15,6 +15,7 @@ public class DiscountDTOMapper implements Function<Discount, DiscountDTO> {
         discountDTO.setExpirationDate(discount.getExpirationDate());
         discountDTO.setStartDate(discount.getStartDate());
         discountDTO.setUsed(discount.isUsed());
+        discountDTO.setSingleUse(discount.isSingleUse());
         return discountDTO;
     }
 }

@@ -1,5 +1,6 @@
 package com.domenicozagaria.admin.cart;
 
+import com.domenicozagaria.admin.discount.Discount;
 import com.domenicozagaria.admin.product.Product;
 import com.domenicozagaria.admin.product.ProductRepository;
 import com.domenicozagaria.admin.util.Utility;
@@ -14,8 +15,10 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.time.LocalDateTime;
-import java.util.List;
+import java.util.Comparator;
+import java.util.function.Function;
 
 @RequiredArgsConstructor
 @Service
@@ -48,8 +51,8 @@ public class CartService {
 
     public void deleteCart(int cartId) {
         Cart cart = Utility.findEntityById(cartRepository, cartId)
-                        .orElseThrow(MissingEntityException::new);
-        if (cart.getClosed() == true) {
+                .orElseThrow(MissingEntityException::new);
+        if (cart.getClosed()) {
             throw new CartClosedException();
         }
         Utility.deleteEntity(cartRepository, cart);
@@ -79,14 +82,27 @@ public class CartService {
         Cart cart = Utility.findEntityById(cartRepository, cartId)
                 .orElseThrow(MissingEntityException::new);
         return cart.getProductList().stream()
-                .map(Product::getPrice)
+                .map(getDiscountedPrice())
                 .reduce(BigDecimal.ZERO, (p1, p2) -> p1.add(p2));
     }
 
+    private Function<Product, BigDecimal> getDiscountedPrice() {
+        return product -> product.getDiscounts().stream()
+                .filter(d -> !d.isUsed())
+                .filter(d -> Utility.checkInBetween(Utility.getTodayWithDefaultTimezone(), d.getStartDate(), d.getExpirationDate()))
+                .map(Discount::getPercentage)
+                .max(Comparator.naturalOrder())
+                .map(BigDecimal::valueOf)
+                .map(evaluateDiscount(product.getPrice()))
+                .orElse(product.getPrice());
+    }
+
+    private Function<BigDecimal, BigDecimal> evaluateDiscount(BigDecimal originalPrice) {
+        return v -> v.divide(BigDecimal.valueOf(100), RoundingMode.DOWN).multiply(originalPrice);
+    }
+
     private long getActiveCartsWithProductSell(int productId) {
-        List<Cart> listActiveCartWithProduct = cartRepository.findAllByProductListIdAndIsClosedFalse(productId);
-        long result = listActiveCartWithProduct.stream()
-                .count();
-        return result;
+        return cartRepository.findAllByProductListIdAndIsClosedFalse(productId)
+                .size();
     }
 }

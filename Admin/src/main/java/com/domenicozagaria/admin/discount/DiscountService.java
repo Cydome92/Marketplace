@@ -1,6 +1,5 @@
 package com.domenicozagaria.admin.discount;
 
-import com.domenicozagaria.admin.tag.TagRepository;
 import com.domenicozagaria.admin.util.Utility;
 import com.domenicozagaria.admin.util.dto.UniqueIdentifierDTO;
 import com.domenicozagaria.admin.util.exception.InvalidPeriodDiscountException;
@@ -19,14 +18,13 @@ public class DiscountService {
     private final DiscountRepository discountRepository;
     private final UniqueIdentifierDTOMapper<DiscountDTO> uniqueIdentifierDTOMapper;
     private final DiscountDTOMapper discountDTOMapper;
-    private final TagRepository tagRepository;
 
     public UniqueIdentifierDTO createDiscount(LocalDateTime startDate, LocalDateTime expirationDate, Double percentage) {
         checkOverridingPeriod(discountRepository.findAll(), startDate, expirationDate);
         Discount discount = new Discount();
         discount.setPercentage(percentage);
-        discount.setExpirationDate(expirationDate);
         discount.setStartDate(startDate);
+        discount.setExpirationDate(expirationDate);
         discountRepository.save(discount);
         return uniqueIdentifierDTOMapper.apply(discountDTOMapper.apply(discount));
     }

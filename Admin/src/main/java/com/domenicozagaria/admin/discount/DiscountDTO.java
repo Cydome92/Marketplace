@@ -21,4 +21,6 @@ public class DiscountDTO extends UniqueIdentifierDTO {
     private LocalDateTime expirationDate;
     @NotNull
     private Boolean used;
+    @NotNull
+    private Boolean singleUse;
 }

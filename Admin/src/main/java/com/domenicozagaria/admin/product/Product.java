@@ -1,5 +1,6 @@
 package com.domenicozagaria.admin.product;
 
+import com.domenicozagaria.admin.discount.Discount;
 import com.domenicozagaria.admin.tag.Tag;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -28,6 +29,8 @@ public class Product {
     private BigDecimal price;
     @ManyToMany(fetch = FetchType.LAZY)
     private Set<Tag> tagList;
+    @ManyToMany
+    private Set<Discount> discounts;
 
     //TODO: implementare barCode e QRCode
 
@@ -78,5 +81,13 @@ public class Product {
 
     public void setPrice(BigDecimal price) {
         this.price = price;
+    }
+
+    public Set<Discount> getDiscounts() {
+        return discounts;
+    }
+
+    public void setDiscounts(Set<Discount> discounts) {
+        this.discounts = discounts;
     }
 }

@@ -5,6 +5,7 @@ import com.domenicozagaria.admin.tag.Tag;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
+import jakarta.persistence.ManyToMany;
 import jakarta.persistence.OneToMany;
 import org.hibernate.annotations.UuidGenerator;
 
@@ -21,10 +22,11 @@ public class Discount {
     private Double percentage;
     private LocalDateTime startDate;
     private LocalDateTime expirationDate;
-    private boolean used;
-    @OneToMany
+    private boolean singleUse = false;
+    private boolean used = false;
+    @OneToMany(mappedBy = "discount")
     private Set<Tag> tags;
-    @OneToMany
+    @ManyToMany(mappedBy = "discounts")
     private Set<Product> products;
 
     public UUID getId() {
@@ -65,6 +67,14 @@ public class Discount {
 
     public void setUsed(boolean used) {
         this.used = used;
+    }
+
+    public boolean isSingleUse() {
+        return singleUse;
+    }
+
+    public void setSingleUse(boolean singleUse) {
+        this.singleUse = singleUse;
     }
 
     public Set<Tag> getTags() {
