@@ -1,6 +1,5 @@
 package com.domenicozagaria.admin.product;
 
-import com.domenicozagaria.admin.tag.TagService;
 import com.domenicozagaria.admin.util.Utility;
 import com.domenicozagaria.admin.util.exception.AlreadyInUseEntityException;
 import com.domenicozagaria.admin.util.exception.ExceededStockException;
@@ -31,11 +30,9 @@ class ProductServiceTest {
     @Mock
     private ProductRepository productRepository;
     @Mock
-    private TagService tagService;
-    @Mock
     private ProductDTOMapper productDTOMapper;
     @Mock
-    private GenericDTOMapper genericDTOMapper;
+    private GenericDTOMapper<ProductDTO> genericDTOMapper;
     private AutoCloseable autoCloseable;
     private ProductService productService;
     private final String ENTITY_TEST_NAME = "test-name";

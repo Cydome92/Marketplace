@@ -5,13 +5,16 @@ import org.springframework.stereotype.Service;
 import java.util.function.Function;
 
 @Service
-public class DiscountDTOMapper implements Function<DiscountModel, DiscountDTO> {
+public class DiscountDTOMapper implements Function<Discount, DiscountDTO> {
+
     @Override
-    public DiscountDTO apply(DiscountModel discountModel) {
+    public DiscountDTO apply(Discount discount) {
         DiscountDTO discountDTO = new DiscountDTO();
-        discountDTO.setId(discountModel.getId());
-        discountDTO.setPercentage(discountModel.getPercentage());
-        discountDTO.setExpiration(discountModel.getExpiration());
+        discountDTO.setUuid(discount.getId());
+        discountDTO.setPercentage(discount.getPercentage());
+        discountDTO.setExpirationDate(discount.getExpirationDate());
+        discountDTO.setStartDate(discount.getStartDate());
+        discountDTO.setUsed(discount.isUsed());
         return discountDTO;
     }
 }

@@ -1,32 +1,46 @@
 package com.domenicozagaria.admin.discount;
 
+import com.domenicozagaria.admin.tag.TagRepository;
 import com.domenicozagaria.admin.util.Utility;
-import com.domenicozagaria.admin.util.exception.InvalidExpirationDateException;
-import com.domenicozagaria.admin.util.exception.InvalidPercentageException;
-import com.domenicozagaria.admin.util.mapper.GenericDTOMapper;
+import com.domenicozagaria.admin.util.dto.UniqueIdentifierDTO;
+import com.domenicozagaria.admin.util.exception.InvalidPeriodDiscountException;
+import com.domenicozagaria.admin.util.mapper.UniqueIdentifierDTOMapper;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
-import java.math.BigInteger;
 import java.time.LocalDateTime;
+import java.util.List;
+import java.util.function.Predicate;
 
 @RequiredArgsConstructor
-public abstract class DiscountService {
+@Service
+public class DiscountService {
 
-    @Autowired
-    GenericDTOMapper<DiscountDTO> genericDTOMapper;
-    @Autowired
-    DiscountDTOMapper discountDTOMapper;
+    private final DiscountRepository discountRepository;
+    private final UniqueIdentifierDTOMapper<DiscountDTO> uniqueIdentifierDTOMapper;
+    private final DiscountDTOMapper discountDTOMapper;
+    private final TagRepository tagRepository;
 
-    public void checkExpirationDate(LocalDateTime expiration) {
-        if (expiration.isBefore(Utility.getTodayWithDefaultTimezone())) {
-            throw new InvalidExpirationDateException();
+    public UniqueIdentifierDTO createDiscount(LocalDateTime startDate, LocalDateTime expirationDate, Double percentage) {
+        checkOverridingPeriod(discountRepository.findAll(), startDate, expirationDate);
+        Discount discount = new Discount();
+        discount.setPercentage(percentage);
+        discount.setExpirationDate(expirationDate);
+        discount.setStartDate(startDate);
+        discountRepository.save(discount);
+        return uniqueIdentifierDTOMapper.apply(discountDTOMapper.apply(discount));
+    }
+
+    private void checkOverridingPeriod(List<Discount> discountList, LocalDateTime startPeriod, LocalDateTime expirationDate) {
+        boolean override = discountList.parallelStream()
+                .anyMatch(findOverridingPeriod(startPeriod, expirationDate));
+        if (override) {
+            throw new InvalidPeriodDiscountException();
         }
     }
 
-    public void checkPercentage(BigInteger percentage) {
-        if (percentage.signum() == -1 && percentage.compareTo(BigInteger.valueOf(100)) > 0) {
-            throw new InvalidPercentageException();
-        }
+    private Predicate<Discount> findOverridingPeriod(LocalDateTime startPeriod, LocalDateTime expirationDate) {
+        return discount -> Utility.checkInBetween(discount.getStartDate(), startPeriod, expirationDate)
+                || Utility.checkInBetween(discount.getExpirationDate(), startPeriod, expirationDate);
     }
 }

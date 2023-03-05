@@ -1,6 +1,5 @@
 package com.domenicozagaria.admin.util;
 
-import com.domenicozagaria.admin.util.dto.GenericDTO;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -39,6 +38,10 @@ public class Utility {
         return toMap.stream()
                 .map(function)
                 .collect(collector);
+    }
+
+    public static boolean checkInBetween(LocalDateTime toCheck, LocalDateTime start, LocalDateTime end) {
+        return !toCheck.isBefore(start) && !toCheck.isAfter(end);
     }
 
     public static int getDefaultPageSize() {
